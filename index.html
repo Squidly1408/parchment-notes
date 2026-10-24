@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2a1a10">
+  <title>Parchment Notes</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Homemade+Apple&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Pinyon+Script&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-font="fell">
+  <div class="app">
+    <!-- ===== Sidebar: the letter case ===== -->
+    <aside class="sidebar" aria-label="Notes">
+      <header class="brand">
+        <div class="brand-seal" aria-hidden="true">P</div>
+        <div>
+          <h1>Parchment Notes</h1>
+          <p class="brand-sub">a scriptorium of small thoughts</p>
+        </div>
+      </header>
+
+      <div class="search-row">
+        <label class="search">
+          <span class="sr-only">Search notes</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+          <input id="search" type="search" placeholder="Search the archive…" autocomplete="off">
+        </label>
+        <button id="newBtn" class="btn btn-wax" title="New note (Alt+N)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3c-6 1-11 6-13 13l-2 5 5-2c7-2 12-7 13-13l-3 1 1-4Z"/></svg>
+          <span>New</span>
+        </button>
+      </div>
+
+      <ul id="noteList" class="note-list" aria-live="polite"></ul>
+      <p id="listEmpty" class="list-empty" hidden></p>
+    </aside>
+
+    <!-- ===== Editor: the writing desk ===== -->
+    <main class="desk">
+      <div class="toolbar" role="toolbar" aria-label="Writing tools">
+        <button id="backBtn" class="tool back-btn" title="Back to notes" aria-label="Back to notes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+        </button>
+
+        <div class="tool-group inks" id="inks" role="radiogroup" aria-label="Ink colour"></div>
+
+        <label class="tool select-tool" title="Handwriting">
+          <span class="sr-only">Handwriting</span>
+          <select id="fontSelect">
+            <option value="fell">IM Fell</option>
+            <option value="pinyon">Pinyon Script</option>
+            <option value="apple">Homemade Apple</option>
+            <option value="tangerine">Tangerine</option>
+          </select>
+        </label>
+
+        <button id="readableBtn" class="tool toggle" aria-pressed="false" title="Readable type">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 10 5h1l6 14M6.5 14h8"/></svg>
+          <span class="tool-label">Readable</span>
+        </button>
+
+        <span class="tool-sep" aria-hidden="true"></span>
+
+        <button id="quillBtn" class="tool toggle" aria-pressed="false" title="Quill drawing mode">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3C13 4 8 9 6 16l-1 5 1-1c1-2 3-3 5-3 5-1 8-6 10-14ZM6 20l6-8"/></svg>
+          <span class="tool-label">Quill</span>
+        </button>
+        <button id="undoBtn" class="tool draw-only" title="Undo last stroke" aria-label="Undo last stroke">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h11a5 5 0 0 1 0 10h-3"/></svg>
+        </button>
+        <button id="clearDrawBtn" class="tool draw-only" title="Erase all sketches" aria-label="Erase all sketches">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 21-4-4L14 6l6 6-9 9H7ZM21 21H11"/></svg>
+        </button>
+
+        <span class="spacer"></span>
+        <span id="saveState" class="save-state" aria-live="polite"></span>
+        <button id="deleteBtn" class="tool danger" title="Burn this note" aria-label="Delete note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>
+        </button>
+      </div>
+
+      <div class="desk-scroll" id="deskScroll">
+        <article class="page" id="page" hidden>
+          <div class="ribbon" aria-hidden="true"></div>
+          <div class="page-inner">
+            <input id="titleInput" class="title-input" type="text" placeholder="Untitled missive" maxlength="140" aria-label="Title">
+            <div class="flourish" aria-hidden="true">
+              <svg viewBox="0 0 300 20"><path d="M10 10c40 0 60-8 90-8s40 16 50 8 20-8 50-8 50 8 90 8"/><circle cx="150" cy="10" r="2.6"/></svg>
+            </div>
+            <p id="dateLine" class="date-line"></p>
+            <textarea id="bodyInput" class="body-input" placeholder="Dip thy quill and begin…" aria-label="Note text" spellcheck="true"></textarea>
+          </div>
+          <canvas id="sketch" class="sketch" aria-label="Quill sketch layer"></canvas>
+          <div class="page-seal" id="pageSeal" aria-hidden="true"><span></span></div>
+        </article>
+
+        <div class="empty-desk" id="emptyDesk" hidden>
+          <div class="empty-letter">
+            <div class="big-seal" aria-hidden="true"><span>✒</span></div>
+            <h2>The desk is bare</h2>
+            <p>No letters have been penned yet. Break the silence with a fresh sheet.</p>
+            <button class="btn btn-wax" id="emptyNewBtn">Begin a new note</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="confirmDialog" class="dialog">
+    <form method="dialog">
+      <h3 id="confirmTitle">Burn this note?</h3>
+      <p id="confirmText">Once committed to the flames, it cannot be recovered.</p>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-plain">Keep it</button>
+        <button value="ok" class="btn btn-wax" id="confirmOk">Burn it</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <!-- shared SVG defs -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="roughen">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="6"/>
+    </filter>
+  </svg>
+
+  <script src="app.js"></script>
+</body>
+</html>
